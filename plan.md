@@ -1,398 +1,677 @@
 # Database Engineer Interview Preparation Plan
 
-## Goal
-Prepare for an open discussion Database Engineer interview focusing on:
-- SQL fundamentals
-- Database internals
-- Scalability concepts
-- Real-world production scenarios
-- Tradeoff-based discussions
+# Goal
+
+Prepare for:
+- Open discussion database interviews
+- Backend/product company discussions
+- Real-world scalability discussions
+- SQL + NoSQL fundamentals and advanced concepts
+
+Focus areas:
+- SQL vs NoSQL
+- DynamoDB
+- Redis
+- Indexing
+- Partitioning
+- Fault tolerance
+- Scaling
+- Cost optimization
+- Query optimization
 
 ---
 
-# Priority Topics
+# WEEK PLAN
 
-1. SQL vs NoSQL
-2. Indexing
-3. Transactions & ACID
-4. Replication
-5. Sharding
-6. Query Optimization
-7. Caching
-8. CAP Theorem
-9. Normalization vs Denormalization
-10. Production Debugging Scenarios
+| Day | Focus |
+|---|---|
+| Day 1 | SQL vs NoSQL fundamentals |
+| Day 2 | Indexing + Query Optimization |
+| Day 3 | Partitioning + Sharding |
+| Day 4 | DynamoDB Deep Dive |
+| Day 5 | Redis + Caching |
+| Day 6 | Fault Tolerance + Replication |
+| Day 7 | Revision + Mock Discussion |
 
 ---
 
-# DAY 1 — SQL + Relational Databases
+# 1. SQL vs NoSQL
 
-## 1. SQL vs NoSQL
+# SQL Databases
 
-### SQL Databases
 Examples:
 - PostgreSQL
 - MySQL
 
-### Strengths
-- Strong consistency
+## Features
+- Structured schema
 - ACID transactions
 - Joins
-- Structured schema
+- Strong consistency
 
-### Best Use Cases
+## Best Use Cases
 - Banking
 - Payments
 - Inventory systems
+- Order management
 
-### Limitations
-- Harder horizontal scaling
+## Advantages
+- Reliable transactions
+- Data consistency
+- Mature ecosystem
+
+## Limitations
+- Hard horizontal scaling
+- Expensive joins at scale
 - Schema rigidity
 
 ---
 
-### NoSQL Databases
+# NoSQL Databases
+
 Examples:
-- MongoDB
+- DynamoDB
 - Redis
 - Cassandra
 
-### Strengths
+## Features
 - Flexible schema
-- High scalability
 - Distributed architecture
+- High scalability
+- High throughput
 
-### Best Use Cases
+## Best Use Cases
 - Social media feeds
-- Analytics systems
-- Real-time applications
+- Analytics
+- Sessions
+- Real-time systems
 
-### Limitations
-- Weaker consistency
-- Joins are difficult
-- Data duplication
+## Advantages
+- Easy horizontal scaling
+- Fast reads/writes
+- Flexible design
+
+## Limitations
+- Complex joins difficult
+- Eventual consistency
+- Denormalized data
 
 ---
 
-## Important Discussion Point
+# IMPORTANT INTERVIEW DISCUSSION
 
-### When would you choose SQL?
+## When to use SQL?
+
 Use SQL when:
-- Transactions are critical
-- Strong consistency is required
-- Complex joins are needed
+- transactions are critical
+- strong consistency required
+- relationships are important
 
-### When would you choose NoSQL?
+Example:
+- banking
+- orders
+- financial systems
+
+---
+
+## When to use NoSQL?
+
 Use NoSQL when:
-- Massive scale is needed
-- Schema changes frequently
-- High write throughput is required
+- scalability is priority
+- flexible schema needed
+- low latency important
+
+Example:
+- activity feeds
+- caching
+- analytics
+- chat systems
 
 ---
 
-# 2. ACID Properties
+# STUDY RESOURCES
 
-## Atomicity
-All operations succeed or fail together.
+## Websites
 
-## Consistency
-Database remains valid after transactions.
+- https://www.geeksforgeeks.org/difference-between-sql-and-nosql/
+- https://www.scaler.com/topics/sql-vs-nosql/
+- https://www.educative.io/blog/sql-vs-nosql-databases
+- https://www.digitalocean.com/community/tutorials/sql-vs-nosql
 
-## Isolation
-Concurrent transactions should not interfere.
+## Videos
 
-## Durability
-Committed data survives crashes.
+- Hussein Nasser
+- ByteByteGo
+- Gaurav Sen
 
 ---
 
-# 3. Indexing
+# 2. INDEXING
 
-## What is an Index?
-A data structure that improves read performance.
+# What is Indexing?
+
+Indexes improve query speed.
 
 Without index:
-- Full table scan
+- full table scan
 - O(n)
 
 With index:
-- Faster lookup
+- fast lookup
 - O(log n)
 
 ---
 
-## Why not index every column?
-Because:
-- More storage needed
-- Inserts/updates become slower
-- Index maintenance overhead
+# How Indexing Works
+
+Most DBs use:
+- B-Tree indexes
+
+Index stores:
+- searchable references to rows
 
 ---
 
-## Composite Index
+# Types of Indexes
 
-Example:
+| Type | Purpose |
+|---|---|
+| Primary Index | Unique identification |
+| Composite Index | Multiple columns |
+| Hash Index | Exact lookup |
+| Covering Index | Query optimization |
+
+---
+
+# Composite Index Example
+
+Index:
 (name, age)
 
-Efficient for:
+Efficient:
 - WHERE name='A'
 - WHERE name='A' AND age=20
 
-Not efficient for:
+Not efficient:
 - WHERE age=20
 
 ---
 
-# 4. Normalization vs Denormalization
+# Why not index every column?
 
-## Normalization
-Reduces redundancy.
+Because:
+- storage overhead
+- slower inserts
+- slower updates
+- maintenance cost
+
+---
+
+# Query Optimization Topics
+
+Learn:
+- execution plans
+- full table scans
+- cardinality
+- query planner
+
+---
+
+# STUDY RESOURCES
+
+## Websites
+
+- https://use-the-index-luke.com/
+- https://www.sqlshack.com/sql-server-index-basics/
+- https://mode.com/sql-tutorial/
+- https://www.geeksforgeeks.org/indexing-in-databases-set-1/
+
+## SQL Practice
+
+- https://sqlbolt.com/
+- https://leetcode.com/problemset/database/
+- https://datalemur.com/sql-interview-questions
+
+---
+
+# 3. PARTITIONING & SHARDING
+
+# What happens when load increases?
+
+As traffic increases:
+- CPU usage increases
+- memory usage increases
+- disk I/O increases
+- DB connections increase
+
+Eventually:
+single DB becomes bottleneck.
+
+---
+
+# Vertical Scaling
+
+Increase:
+- CPU
+- RAM
 
 Advantages:
-- Better consistency
-- Easier maintenance
+- simple
 
-Disadvantages:
-- More joins
-- Slower reads
+Limitations:
+- expensive
+- hardware limit
 
 ---
 
-## Denormalization
-Duplicates data intentionally.
+# Horizontal Scaling
+
+Add more servers.
 
 Advantages:
-- Faster reads
-- Better performance at scale
+- scalable
+- distributed load
 
-Disadvantages:
-- Data inconsistency risk
-
----
-
-# 5. Transactions & Isolation Levels
-
-Understand:
-- Dirty reads
-- Non-repeatable reads
-- Phantom reads
-
-Isolation Levels:
-- Read Uncommitted
-- Read Committed
-- Repeatable Read
-- Serializable
+Limitations:
+- operational complexity
 
 ---
 
-# DAY 2 — Scaling & Distributed Systems
+# Partitioning
 
-# 1. Replication
+Splitting large tables into smaller logical parts.
 
-## What is Replication?
-Copying data from primary DB to replicas.
+## Types
 
-### Benefits
-- Read scalability
-- Failover support
-- Backup
-
-### Challenges
-- Replication lag
-- Stale reads
+| Type | Example |
+|---|---|
+| Range | date ranges |
+| Hash | hash(user_id) |
+| List | country based |
 
 ---
 
-# 2. Sharding
+# Benefits of Partitioning
 
-## What is Sharding?
+- faster queries
+- smaller indexes
+- easier maintenance
+
+---
+
+# Sharding
+
 Splitting data across multiple DB servers.
 
-### Why Needed?
-Single DB becomes bottleneck due to:
-- CPU
-- Memory
-- Storage
+Example:
+- shard1 → users 1-1M
+- shard2 → users 1M-2M
 
 ---
 
-## Sharding Problems
-- Cross-shard joins difficult
-- Rebalancing complexity
-- Hot partitions
+# Problems in Sharding
+
+- cross-shard joins difficult
+- rebalancing complex
+- operational overhead
+- hot partitions
 
 ---
 
-# 3. CAP Theorem
+# DynamoDB Partitioning
 
-Distributed systems can guarantee only two:
+DynamoDB automatically partitions data.
+
+Partition key selection is CRITICAL.
+
+---
+
+# Hot Partition Problem
+
+Bad partition key:
+country = India
+
+Good partition key:
+user_id
+
+---
+
+# STUDY RESOURCES
+
+## Websites
+
+- https://www.geeksforgeeks.org/difference-between-database-sharding-and-partitioning/
+- https://www.cockroachlabs.com/blog/what-is-database-sharding/
+- https://systemdesign.one/database-sharding-explained/
+- https://www.baeldung.com/cs/database-sharding
+
+## Videos
+
+- ByteByteGo
+- Gaurav Sen
+- Hussein Nasser
+
+---
+
+# 4. DYNAMODB DEEP DIVE
+
+# Important Concepts
+
+## Partition Key
+Determines data distribution.
+
+## Sort Key
+Supports range queries.
+
+Example:
+- user_id + timestamp
+
+---
+
+# Strengths
+
+- serverless
+- highly scalable
+- low latency
+- auto scaling
+
+---
+
+# Limitations
+
+- limited joins
+- access pattern driven
+- hot partitions possible
+
+---
+
+# Important Discussion Point
+
+DynamoDB schema design depends on:
+- access patterns
+- query requirements
+
+NOT traditional normalization.
+
+---
+
+# Consistency
+
+## Eventual Consistency
+- faster
+- cheaper
+
+## Strong Consistency
+- accurate
+- more expensive
+
+---
+
+# STUDY RESOURCES
+
+## Websites
+
+- https://www.alexdebrie.com/posts/dynamodb-single-table/
+- https://www.serverlesslife.com/DynamoDB_Design_Patterns_for_Single_Table_Design.html
+- https://dynobase.dev/dynamodb-learning/
+- https://www.dynamodbguide.com/
+
+## Videos
+
+- Hussein Nasser DynamoDB videos
+- Be A Better Dev
+- AWS DynamoDB tutorials
+
+---
+
+# 5. REDIS & CACHING
+
+# What is Redis?
+
+In-memory key-value store.
+
+Very fast because:
+- data stored in RAM
+
+---
+
+# Common Redis Use Cases
+
+- caching
+- sessions
+- rate limiting
+- leaderboards
+
+---
+
+# Cache Aside Pattern
+
+1. Check cache
+2. Cache miss
+3. Fetch DB
+4. Update cache
+
+---
+
+# Cache Invalidation
+
+Common issue:
+- stale data
+
+---
+
+# Redis Limitations
+
+- RAM expensive
+- persistence tradeoffs
+- not ideal for complex queries
+
+---
+
+# Redis Eviction Policies
+
+Learn basics:
+- LRU
+- TTL expiration
+
+---
+
+# STUDY RESOURCES
+
+## Websites
+
+- https://www.freecodecamp.org/news/redis-for-beginners/
+- https://www.geeksforgeeks.org/what-is-redis-introduction-and-explanation/
+- https://roadmap.sh/redis
+- https://systemdesign.one/redis-cache-system-design/
+
+## Videos
+
+- Hussein Nasser Redis videos
+- ByteByteGo Redis explanations
+
+---
+
+# 6. NORMALIZATION & DENORMALIZATION
+
+# Normalization
+
+Goal:
+Reduce redundancy.
+
+Benefits:
+- consistency
+- cleaner schema
+- easier updates
+
+Problems:
+- too many joins
+
+---
+
+# Denormalization
+
+Duplicate data intentionally.
+
+Benefits:
+- faster reads
+- scalability
+- fewer joins
+
+Common in:
+- NoSQL systems
+- distributed systems
+
+---
+
+# Strong Interview Point
+
+NoSQL systems often denormalize intentionally because joins across distributed systems are expensive.
+
+---
+
+# STUDY RESOURCES
+
+## Websites
+
+- https://www.studytonight.com/dbms/database-normalization.php
+- https://www.guru99.com/database-normalization.html
+- https://www.javatpoint.com/dbms-normalization
+
+---
+
+# 7. FAULT TOLERANCE & REPLICATION
+
+# Replication
+
+Copying data to replicas.
+
+---
+
+# Benefits
+
+- failover
+- high availability
+- read scalability
+- backups
+
+---
+
+# Replication Problems
+
+## Replication Lag
+Replica may return stale data.
+
+---
+
+# Fault Tolerance
+
+System survives failures.
+
+Methods:
+- replication
+- backups
+- failover
+- distributed nodes
+
+---
+
+# CAP Theorem
+
+Distributed systems tradeoff:
 - Consistency
 - Availability
 - Partition Tolerance
 
-Tradeoffs are important.
+---
+
+# Strong DynamoDB Discussion
+
+DynamoDB prioritizes:
+- availability
+- partition tolerance
+
+while allowing eventual consistency.
 
 ---
 
-# 4. Caching
+# STUDY RESOURCES
 
-Example:
-- Redis
+## Websites
 
-## Why Use Cache?
-- Reduce latency
-- Reduce DB load
-
-## Common Problems
-- Cache invalidation
-- Stale data
+- https://www.geeksforgeeks.org/fault-tolerance-in-dbms/
+- https://www.baeldung.com/cs/cap-theorem
+- https://systemdesign.one/cap-theorem/
+- https://www.educative.io/blog/cap-theorem
 
 ---
 
-# 5. Query Optimization
+# 8. COST OPTIMIZATION
 
-Learn:
-- Execution plans
-- Full table scans
-- Cardinality
-- Index strategy
+# SQL Cost Challenges
 
----
-
-# 6. Database Failures
-
-## If Primary DB Fails
-Possible solutions:
-- Failover
-- Promote replica
-- Load balancer rerouting
+Costs increase due to:
+- larger machines
+- replicas
+- storage
+- licenses
 
 ---
 
-# Common Interview Questions
+# NoSQL Cost Benefits
 
-## SQL Questions
-- Difference between WHERE and HAVING
-- Primary key vs unique key
-- Clustered vs non-clustered index
-- Joins
-- Window functions
+- distributed scaling
+- auto scaling
+- pay-per-request models
 
 ---
 
-## System Design Questions
-- How would you scale a DB?
-- When would you shard?
-- Why is a query slow?
-- How would you reduce latency?
-- When would you use Redis?
+# Redis Cost Tradeoff
+
+Redis is fast but:
+- RAM is expensive
 
 ---
 
-# Strong Scenario-Based Answer
+# Strong Interview Statement
 
-## Application became slow suddenly. What would you check?
-
-1. Slow queries
-2. CPU and memory usage
-3. Locks
-4. Missing indexes
-5. Connection pool exhaustion
-6. Replication lag
-7. Recent deployments
+Database choices are tradeoffs between:
+- scalability
+- consistency
+- latency
+- operational complexity
+- cost
 
 ---
 
-# Important Interview Advice
-
-## Speak in Tradeoffs
-
-Avoid:
-"MongoDB is better."
-
-Instead say:
-"MongoDB is useful when schema flexibility and scalability are priorities, while relational databases are better for strong consistency and complex joins."
-
----
-
-# Best Resources
-
-## YouTube Channels
-
-### Hussein Nasser
-https://www.youtube.com/@hnasr
-
-Recommended topics:
-- Indexing
-- Replication
-- Sharding
-- Transactions
-
----
-
-### CMU Database Systems
-https://www.youtube.com/@CMUDatabaseGroup
-
-Great for:
-- Database internals
-- Query optimization
-- Storage engines
-
----
-
-### ByteByteGo
-https://www.youtube.com/@ByteByteGo
-
-Great for:
-- Distributed systems
-- Scaling concepts
-- System design
-
----
-
-# SQL Practice Resources
-
-## SQLBolt
-https://sqlbolt.com/
-
-## LeetCode SQL
-https://leetcode.com/problemset/database/
-
-## DataLemur
-https://datalemur.com/sql-interview-questions
-
----
-
-# PostgreSQL Resources
-
-## Official Documentation
-https://www.postgresql.org/docs/
-
----
-
-# Last Minute Revision Topics
+# FINAL REVISION TOPICS
 
 Before interview revise:
 - SQL vs NoSQL
-- Indexes
-- ACID
-- Transactions
-- Replication
-- Sharding
+- indexing
+- partitioning
+- sharding
+- DynamoDB partition keys
+- Redis caching
+- normalization
+- replication
 - CAP theorem
-- Caching
-- Query optimization
+- fault tolerance
+- query optimization
 
 ---
 
-# Final Interview Strategy
+# FINAL INTERVIEW STRATEGY
 
-Focus on:
-- Clear explanations
-- Real-world examples
-- Tradeoffs
-- Scalability thinking
-- Production debugging mindset
+During discussions:
+- explain tradeoffs
+- use real-world examples
+- discuss scaling limitations
+- mention operational complexity
+- mention cost considerations
 
-Do not try to memorize definitions.
-Focus on understanding and discussion.
+Avoid:
+"This DB is best."
+
+Prefer:
+"This DB is more suitable depending on scalability, consistency, latency, and query requirements."
